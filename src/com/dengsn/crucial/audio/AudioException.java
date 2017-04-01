@@ -4,6 +4,10 @@ import com.dengsn.crucial.GameException;
 
 public class AudioException extends GameException
 {
-  public AudioException(String message) { super(message); }
-  public AudioException(String message, Throwable cause) { super(message,cause); }
+  public AudioException(String message) { 
+    super(message); 
+  }
+  public AudioException(String message, Throwable cause) { 
+    super(message,cause); 
+  }
 }

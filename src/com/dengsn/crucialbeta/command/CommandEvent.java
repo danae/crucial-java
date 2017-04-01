@@ -1,6 +1,6 @@
 package com.dengsn.crucialbeta.command;
 
-import com.dengsn.crucial.event.Event;
+import com.dengsn.crucial.core.event.Event;
 
 public class CommandEvent extends Event
 {

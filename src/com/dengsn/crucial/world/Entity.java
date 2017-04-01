@@ -1,31 +1,21 @@
 package com.dengsn.crucial.world;
 
+import com.dengsn.crucial.Drawable;
+import com.dengsn.crucial.GameException;
+import com.dengsn.crucial.Updateable;
 import java.util.UUID;
 
-public abstract class Entity implements EntityInterface
+public interface Entity extends Drawable, Updateable
 {
-  // Variables 
-  private final World world;
-  private final UUID uuid;
-  
-  // Constructor
-  public Entity(World world)
-  {
-    this.world = world;
-    this.world.getEntities().add(this);
-    
-    this.uuid = UUID.randomUUID();
-  }
-  
   // Returns the world of this entity
-  @Override public final World getWorld()
-  {
-    return this.world;  
-  }
+  public World getWorld();
   
   // Returns the unique identifier of this entity
-  @Override public final UUID getUUID()
-  {
-    return this.uuid;  
-  }
+  public UUID getUUID();
+  
+  // Draws this entity
+  @Override public void draw() throws GameException;
+  
+  // Updates this entity
+  @Override public void update(long elaspedTime) throws GameException;
 }

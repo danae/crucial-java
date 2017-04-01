@@ -2,6 +2,6 @@ package com.dengsn.crucial;
 
 @FunctionalInterface public interface Updateable
 {
-  // Update methods
+  // Updates this updateable
   public void update(long elapsedTime) throws GameException;
 }

@@ -1,18 +1,22 @@
 package com.dengsn.crucial;
 
-import com.dengsn.crucial.util.Viewport;
-import com.dengsn.crucial.util.Point;
+import com.dengsn.crucial.util.Camera;
+import com.dengsn.crucial.util.Vector;
 
 @FunctionalInterface public interface Drawable
 {
-  // Drawable methods
+  // Draws this drawable
   public void draw() throws GameException;
-  public default void drawAt(Viewport viewport) throws GameException
+  
+  // Draws the drawable using a camera
+  public default void drawAt(Camera camera) throws GameException
   {
-    viewport.draw(this);
+    camera.draw(this);
   }
-  public default void drawAt(Point position) throws GameException
+  
+  // Draws this drawabale at a position
+  public default void drawAt(Vector v) throws GameException
   {
-    this.drawAt(new Viewport().withTranslation(position));
+    this.drawAt(new Camera(v));
   }
 }

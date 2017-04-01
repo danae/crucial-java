@@ -1,9 +1,8 @@
 package com.dengsn.crucialbeta.console;
 
-import com.dengsn.crucial.event.Listener;
-import com.dengsn.crucialbeta.console.message.InMessage;
-import com.dengsn.crucial.window.keyboard.KeyboardPressEvent;
-import com.dengsn.crucial.window.keyboard.CharacterEvent;
+import com.dengsn.crucial.core.event.ListenerPriority;
+import com.dengsn.crucial.core.keyboard.KeyboardPressEvent;
+import com.dengsn.crucial.core.keyboard.KeyboardCharacterEvent;
 import org.lwjgl.glfw.GLFW;
 
 public final class InteractiveInput
@@ -21,8 +20,8 @@ public final class InteractiveInput
   {
     this.console = console;
     this.active = this.console.isFixed();
-    this.getConsole().getGame().registerListener(this::onKeyboard,KeyboardPressEvent.class,Listener.Priority.HIGH);
-    this.getConsole().getGame().registerListener(this::onText,CharacterEvent.class,Listener.Priority.HIGH);
+    this.getConsole().getWindow().registerListener(this::onKeyboard,KeyboardPressEvent.class,ListenerPriority.HIGHEST);
+    this.getConsole().getWindow().registerListener(this::onCharacter,KeyboardCharacterEvent.class,ListenerPriority.HIGHEST);
     this.reset();
   }
   
@@ -122,7 +121,7 @@ public final class InteractiveInput
       {
         // Enter -> Handle command, reset and deactivate
         case GLFW.GLFW_KEY_ENTER:
-          InMessage in = new InMessage(this.getConsole(),this.getBuffer());
+          Input in = new Input(this.getConsole(),this.getBuffer());
           this.getConsole().in(in);
           
         // Escape -> reset and deactivate
@@ -154,8 +153,8 @@ public final class InteractiveInput
     }
   }
   
-  // Text event
-  public void onText(CharacterEvent e)
+  // Character event
+  public void onCharacter(KeyboardCharacterEvent e)
   {
     if (this.isActive())
       this.buffer.append(e.getText());

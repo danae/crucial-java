@@ -5,5 +5,5 @@ import java.util.Date;
 public interface Command
 {
   public String getMessage();
-  public Date getTimestamp();
+  public Date getDate();
 }

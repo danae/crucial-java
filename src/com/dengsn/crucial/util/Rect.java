@@ -1,156 +1,82 @@
 package com.dengsn.crucial.util;
 
-public class Rect 
+import java.util.Locale;
+
+public class Rect implements Collidable<Rect>
 {
   // Variables
-  public Point tl;
-  public Point br;
+  public double x1;
+  public double y1;
+  public double x2;
+  public double y2;
   
   // Constructor
   public Rect(double x1, double y1, double x2, double y2)
   {
-    this.tl = new Point(x1,y1);
-    this.br = new Point(x2,y2);
-  }
-  public Rect(Point tl, Point br)
-  {
-    this.tl = new Point(tl);
-    this.br = new Point(br);
-  }
-  public Rect(Rect rect)
-  {
-    this.tl = new Point(rect.tl);
-    this.br = new Point(rect.br);
+    this.x1 = x1;
+    this.y1 = y1;
+    this.x2 = x2;
+    this.y2 = y2;
   }
   
   // Object methods
   @Override public boolean equals(Object o)
   {
-    if (!(o instanceof Rect))
+    if (o == null ||!o.getClass().equals(this.getClass()))
       return false;
     
-    Rect r = (Rect)o;
-    return (r.tl.equals(this.tl) && r.br.equals(this.br));
+    Rect rect = (Rect)o;
+    if (Double.doubleToLongBits(this.x1) != Double.doubleToLongBits(rect.x1))
+      return false;
+    else if (Double.doubleToLongBits(this.y1) != Double.doubleToLongBits(rect.y1))
+      return false;
+    else if (Double.doubleToLongBits(this.x2) != Double.doubleToLongBits(rect.x2))
+      return false;
+    else if (Double.doubleToLongBits(this.y2) != Double.doubleToLongBits(rect.y2))
+      return false;
+    else
+      return true;
   }
   
-  // Getters
-  public Point center()
+  // Returns the width of this rect
+  public double getWidth()
   {
-    return new Point((this.tl.x + this.br.x) / 2.0,(this.tl.y + this.br.y) / 2.0);  
-  }
-  public double width()
-  {
-    return Math.abs(this.br.x - this.tl.x);  
-  }
-  public double height()
-  {
-    return Math.abs(this.br.y - this.tl.y);  
+    return Math.abs(this.x2 - this.x1);  
   }
   
-  // Checks
-  public boolean isEmpty()
+  // Returns the height of this rect
+  public double getHeight()
   {
-    return (this.tl.isEmpty() && this.br.isEmpty());  
-  }
-  public boolean contains(Point pt)
-  {
-    return (
-      pt.x >= this.tl.x && pt.x <= this.br.x
-      && pt.y >= this.tl.y && pt.y <= this.br.y
-    );  
+    return Math.abs(this.y2 - this.y1);  
   }
   
-  // Manipulation
-  public Rect mirrorX()
+  // Returns the aspect ratio of this rect
+  public double getRatio()
   {
-    return new Rect(this.tl.mirrorX(),this.br.mirrorX());  
+    return this.getWidth() / this.getHeight();
   }
   
-  public Rect mirrorY()
+  // Returns the center of this rect
+  public Vector getCenter()
   {
-    return new Rect(this.tl.mirrorY(),this.br.mirrorY());  
+    return new Vector((this.x1 + this.x2) / 2,(this.y1 + this.y2) / 2);  
   }
   
-  public Rect invert()
+  // Returns if this rectangle contains a vector
+  public boolean contains(Vector v)
   {
-    return this.mirrorX().mirrorY();
+    return this.x1 <= v.x && v.x <= this.x2 && this.y1 <= v.y && v.y <= this.y2;  
   }
   
-  public Rect add(Rect rect)
+  // Returns if this rect collides with another rect
+  @Override public boolean collidesWith(Rect r)
   {
-    return new Rect(this.tl.add(rect.tl),this.br.add(rect.br));
-  }
-  public Rect add(double x1, double y1, double x2, double y2)
-  {
-    return new Rect(this.tl.add(x1,y1),this.br.add(x2,y2));
-  }
-  public Rect add(Point pt)
-  {
-    return new Rect(this.tl.add(pt),this.br.add(pt));
-  }
-  public Rect add(double x, double y)
-  {
-    return new Rect(this.tl.add(x,y),this.br.add(x,y));
-  }
-  public Rect add(double xy)
-  {
-    return this.add(new Point(xy,xy));
+    return (r.x1 >= this.x1 && r.x1 <= this.x2) || (r.x2 >= this.x1 && r.x2 <= this.x2) || (r.y1 >= this.y1 && r.y1 <= this.y2) || (r.y2 >= this.y1 && r.y2 <= this.y2);  
   }
   
-  public Rect subtract(Rect rect)
-  {
-    return new Rect(this.tl.subtract(rect.tl),this.br.subtract(rect.br));
-  }
-  public Rect subtract(double x1, double y1, double x2, double y2)
-  {
-    return new Rect(this.tl.subtract(x1,y1),this.br.subtract(x2,y2));
-  }
-  public Rect subtract(Point pt)
-  {
-    return new Rect(this.tl.subtract(pt),this.br.subtract(pt));
-  }
-  public Rect subtract(double x, double y)
-  {
-    return this.subtract(new Point(x,y));
-  }
-  public Rect subtract(double xy)
-  {
-    return this.subtract(new Point(xy,xy));
-  }
-  
-  public Rect multiply(double x, double y)
-  {
-    return new Rect(this.tl.multiply(x,y),this.br.multiply(x,y));
-  }
-  public Rect multiply(double xy)
-  {
-    return this.multiply(xy,xy);
-  }
-  
-  public Rect divide(double x, double y)
-  {
-    return this.multiply(1.0/x,1.0/y);
-  }
-  public Rect divide(double xy)
-  {
-    return this.divide(xy,xy);
-  }
-  
-  public Rect combine(Rect rect)
-  {
-    return new Rect(Point.min(this.tl,rect.tl),Point.max(this.br,rect.br)); 
-  }
-  
-  public Point map(Point position, Rect positionBounds)
-  {
-    Point relativePosition = position.subtract(positionBounds.tl);
-    Point fraction = relativePosition.divide(positionBounds.width(),positionBounds.height());
-    return this.tl.add(fraction.multiply(this.width(),this.height()));
-  }
-  
-  // To string
+  // Convert to string
   @Override public String toString()
   {
-    return String.format("%s(%s;%s)",this.getClass().getSimpleName(),this.tl.toString(),this.br.toString());
+    return String.format(Locale.ENGLISH,"(%f,%f,%f,%f)",this.x1,this.y1,this.x2,this.y2);
   }
 }

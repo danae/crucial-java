@@ -1,40 +1,90 @@
 package com.dengsn.crucial.graphics.shape;
 
 import com.dengsn.crucial.Drawable;
-import com.dengsn.crucial.graphics.color.Brush;
-import com.dengsn.crucial.graphics.color.Brushable;
-import com.dengsn.crucial.graphics.color.Color;
+import com.dengsn.crucial.GameException;
+import com.dengsn.crucial.graphics.GL;
+import com.dengsn.crucial.graphics.Color;
+import org.lwjgl.opengl.GL11;
 
-public abstract class Shape implements Brushable, Drawable
+public abstract class Shape implements Drawable
 {
   // Variables
-  private Brush brush = new Brush();
+  private Color fillColor = Color.WHITE;
+  private Color strokeColor = null;
+  private double strokeWidth = 1.0;
   
-  // Management
-  @Override public Brush getBrush()
+  // Returns the fill color of this shape
+  public Color getFillColor()
   {
-    return this.brush;
-  }
-  @Override public void setBrush(Brush brush)
-  {
-    this.brush = brush;
+    return this.fillColor;  
   }
   
-  // Overrides
-  @Override public Shape withBrush(Brush brush)
+  // Sets the fill color of this shape
+  public Shape setFillColor(Color fillColor)
   {
-    return (Shape)Brushable.super.withBrush(brush);
+    this.fillColor = fillColor;
+    return this;
   }
-  @Override public Shape withFillColor(Color fillColor)
+  
+  // Returns if this shape is filled
+  public boolean isFilled()
   {
-    return (Shape)Brushable.super.withFillColor(fillColor);
+    return this.fillColor != null;  
   }
-  @Override public Shape withStrokeColor(Color strokeColor)
+  
+  // Returns the stroke color of this shape
+  public Color getStrokeColor()
   {
-    return (Shape)Brushable.super.withStrokeColor(strokeColor);
+    return this.strokeColor;  
   }
-  @Override public Brushable withStrokeWidth(double strokeWidth)
+  
+  // Sets the stroke color of this shape
+  public Shape setStrokeColor(Color strokeColor)
   {
-    return (Shape)Brushable.super.withStrokeWidth(strokeWidth);
+    this.strokeColor = strokeColor;
+    return this;
+  }
+  
+  // Returns the stroke width of this shape
+  public double getStrokeWidth()
+  {
+    return this.strokeWidth;
+  }
+  
+  // Sets the stroke width of this shape
+  public Shape setStrokeWidth(double strokeWidth)
+  {
+    this.strokeWidth = strokeWidth;
+    return this;
+  }
+  
+  // Returns if this shape is stroked
+  public boolean isStroked()
+  {
+    return this.strokeColor != null;  
+  }
+  
+  // Draw using brush
+  public void fill(Drawable d) throws GameException
+  {
+    if (this.isFilled())
+    {
+      GL.color(this.fillColor);
+      d.draw();
+    }
+  }
+  public void stroke(Drawable d) throws GameException
+  {
+    if (this.isStroked())
+    {
+      GL.color(this.strokeColor);
+      GL11.glLineWidth((float)this.strokeWidth);
+      d.draw();
+    }
+  }
+  public void brush(Drawable fill, Drawable stroke) throws GameException
+  {
+    this.stroke(stroke);
+    this.fill(fill);
   }
 }

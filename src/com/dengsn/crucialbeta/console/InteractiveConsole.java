@@ -1,30 +1,29 @@
 package com.dengsn.crucialbeta.console;
 
-import com.dengsn.crucial.Game;
 import com.dengsn.crucial.GameException;
-import com.dengsn.crucial.graphics.color.Color;
-import com.dengsn.crucial.util.Viewport;
-import com.dengsn.crucial.util.Point;
+import com.dengsn.crucial.graphics.Color;
 import com.dengsn.crucial.util.Rect;
-import com.dengsn.crucial.graphics.opengl.GL;
-import com.dengsn.crucialbeta.command.CommandManager;
-import com.dengsn.crucialbeta.console.message.InMessage;
+import com.dengsn.crucial.graphics.GL;
+import com.dengsn.crucial.core.Window;
+import com.dengsn.crucial.util.Camera;
+import com.dengsn.crucial.util.Vector;
+import com.dengsn.crucialbeta.command.CommandList;
 import java.util.ArrayList;
 import java.util.List;
 
 public class InteractiveConsole extends Console
 {
   // Variables
-  private final CommandManager commandManager;
+  private final CommandList commandManager;
   private final List<Command> history;
   private final InteractiveInput input;
   private Color inputColor = Color.WHITE;
   private boolean fixed = false;
   
   // Constructor
-  public InteractiveConsole(Game game, CommandManager commandManager)
+  public InteractiveConsole(Window window, CommandList commandManager)
   {
-    super(game);
+    super(window);
     
     this.commandManager = commandManager;
     this.history = new ArrayList<>();
@@ -32,7 +31,7 @@ public class InteractiveConsole extends Console
   }
   
   // Management
-  public CommandManager getCommandManager()
+  public CommandList getCommandManager()
   {
     return this.commandManager;
   }
@@ -69,15 +68,15 @@ public class InteractiveConsole extends Console
     {
       // Draw it
       String input = this.input.getBuffer() + "_";
-      this.getGame().getGraphics().toViewport().draw(() -> 
+      this.getWindow().toCamera().draw(() -> 
       {
-        GL.color(this.getGame().getGraphics().getBackground());
-        GL.rectangle(new Rect(4,this.getGame().getGraphics().getHeight() - 4 - height,this.getGame().getGraphics().getWidth() - 4,this.getGame().getGraphics().getHeight() - 4));
+        GL.color(this.getWindow().getBackground());
+        GL.rectangle(new Rect(4,this.getWindow().getHeight() - 4 - height,this.getWindow().getWidth() - 4,this.getWindow().getHeight() - 4));
         
         this.getFont()
           .withText(input)
-          .withColor(this.getInputColor())
-          .drawAt(new Point(4,this.getGame().getGraphics().getHeight() - 4 - height));
+          .setColor(this.getInputColor())
+          .drawAt(new Vector(4,this.getWindow().getHeight() - 4 - height));
       });
       
       // Set offset
@@ -85,13 +84,13 @@ public class InteractiveConsole extends Console
     }
     
     // Draw the console
-    new Viewport().withTranslation(new Point(0,offset).invert()).draw(super::draw);
+    new Camera(new Vector(0,offset).invert()).draw(super::draw);
   }
   
   // Console event
-  void in(InMessage in)
+  void in(Input in)
   {
-    this.getGame().registerEvent(in);
+    this.getWindow().registerEvent(in);
     this.getHistory().add(in);
   }
 }

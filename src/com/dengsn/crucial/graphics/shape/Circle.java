@@ -1,64 +1,68 @@
 package com.dengsn.crucial.graphics.shape;
 
 import com.dengsn.crucial.GameException;
-import com.dengsn.crucial.graphics.color.Brush;
-import com.dengsn.crucial.graphics.color.Color;
-import com.dengsn.crucial.util.Point;
-import com.dengsn.crucial.graphics.opengl.GL;
+import com.dengsn.crucial.graphics.Color;
+import com.dengsn.crucial.util.Vector;
+import com.dengsn.crucial.graphics.GL;
 
 public class Circle extends Shape
 {
   // Variables
-  private Point position = Point.origin();
-  private double radius = 0.0;
+  private Vector position;
+  private double radius;
   
-  // Management
-  public Point getPosition()
+  // Constructor
+  public Circle()
+  {
+    this.position = Vector.origin();
+    this.radius = 0.0;
+  }
+  
+  // Returns the position
+  public Vector getPosition()
   {
     return this.position;
   }
-  public void setPosition(Point position)
+  
+  // Sets the position
+  public Circle setPosition(Vector position)
   {
     this.position = position;
-  }
-  public Circle withPosition(Point position)
-  {
-    this.setPosition(position);
     return this;
   }
+  
+  // Returns the ratius
   public double getRadius()
   {
     return this.radius;
   }
-  public void setRadius(double radius)
+  
+  // Sets the radius
+  public Circle setRadius(double radius)
   {
     this.radius = radius;
-  }
-  public Circle withRadius(double radius)
-  {
-    this.setRadius(radius);
     return this;
   }
   
-  // Overrides
-  @Override public Circle withBrush(Brush brush)
+  // Sets the fill color
+  @Override public Circle setFillColor(Color fillColor)
   {
-    return (Circle)super.withBrush(brush);
-  }
-  @Override public Circle withFillColor(Color fillColor)
-  {
-    return (Circle)super.withFillColor(fillColor);
-  }
-  @Override public Circle withStrokeColor(Color strokeColor)
-  {
-    return (Circle)super.withStrokeColor(strokeColor);
-  }
-  @Override public Circle withStrokeWidth(double strokeWidth)
-  {
-    return (Circle)super.withStrokeWidth(strokeWidth);
+    return (Circle)super.setFillColor(fillColor);
   }
   
-  // Draw
+  // Sets the stroke color
+  @Override public Circle setStrokeColor(Color strokeColor)
+  {
+    return (Circle)super.setStrokeColor(strokeColor);
+  }
+  
+  // Sets the stroke width
+  @Override public Circle setStrokeWidth(double strokeWidth)
+  {
+    return (Circle)super.setStrokeWidth(strokeWidth);
+  }
+  
+  // Draws the circle
   @Override public void draw() throws GameException
   {
     this.brush(

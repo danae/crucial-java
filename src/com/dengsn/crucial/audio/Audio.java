@@ -1,13 +1,12 @@
 package com.dengsn.crucial.audio;
 
-import com.dengsn.crucial.Resource;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALC10;
 import org.lwjgl.openal.ALCCapabilities;
 import org.lwjgl.openal.ALCapabilities;
 
-public class Audio implements Resource
+public class Audio implements AutoCloseable
 {
   // Variables
   private long device;

@@ -1,9 +1,6 @@
 package com.dengsn.crucial.graphics;
 
-import com.dengsn.crucial.graphics.color.Color;
 import com.dengsn.crucial.Drawable;
-import com.dengsn.crucial.Resource;
-import com.dengsn.crucial.graphics.opengl.GL;
 import com.dengsn.crucial.util.Rect;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -16,7 +13,7 @@ import javax.imageio.ImageIO;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-public final class Texture implements Resource, Drawable
+public final class Texture implements AutoCloseable, Drawable
 {
   // Variables
   private final int id;
@@ -98,13 +95,13 @@ public final class Texture implements Resource, Drawable
   {
     double x1 = 0;
     double y1 = 0;
-    double x2 = region.width();
-    double y2 = region.height();
+    double x2 = region.getWidth();
+    double y2 = region.getHeight();
 
-    double s1 = region.tl.x / this.getWidth();
-    double t1 = region.tl.y / this.getHeight();
-    double s2 = (region.br.x) / this.getWidth();
-    double t2 = (region.br.y) / this.getHeight();
+    double s1 = region.x1 / this.getWidth();
+    double t1 = region.y1 / this.getHeight();
+    double s2 = region.x2 / this.getWidth();
+    double t2 = region.y2 / this.getHeight();
 
     return () ->
     {

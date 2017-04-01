@@ -1,6 +1,5 @@
 package com.dengsn.crucial.audio;
 
-import com.dengsn.crucial.Resource;
 import com.dengsn.crucial.audio.decoder.DecodedBuffer;
 import com.dengsn.crucial.audio.decoder.Decoder;
 import com.dengsn.crucial.audio.openal.ALBuffer;
@@ -10,7 +9,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import org.lwjgl.openal.AL11;
 
-public class Sound implements Resource
+public class Sound implements AutoCloseable
 {
   // Variables
   private final ALBuffer buffer;

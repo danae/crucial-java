@@ -1,126 +1,64 @@
 package com.dengsn.crucial;
 
-import com.dengsn.crucial.event.EventManager;
-import com.dengsn.crucial.event.CloseEvent;
-import com.dengsn.crucial.window.Window;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import com.dengsn.crucial.audio.Audio;
+import com.dengsn.crucial.core.Window;
+import com.dengsn.crucial.core.WindowController;
 
-public abstract class Game extends Window implements Drawable, Updateable, Resource
+public final class Game extends WindowController
 {
-  // Static game instance
+  // Static instance
   private static Game instance;
   
-  // Returns the static game instance
-  public static Game getInstance()
+  // Returns the singleton instance of this class, create one if not yet done
+  public static Game get() throws GameException
   {
-    return Game.instance;
+    // Create a new game if no instance is created yet
+    if (instance == null)
+      instance = new Game();
+    
+    // Return the instance
+    return instance;
   }
   
-  // Timer class
-  public static final class Timer
+  // Runs a new instance with a window
+  public static <T extends Window> void run(Class<T> windowClass) throws GameException
   {
-    // Variables
-    private long lastLoop = this.getTime();
-    private long currentLoop = this.getTime();
-   
-    // Get time
-    public long getTime()
+    try
     {
-      return System.currentTimeMillis();
+      Game.get()
+        .addWindow(windowClass.newInstance())
+        .run();
     }
-  
-    // Get delta time
-    public long getDeltaTime()
+    catch (InstantiationException | IllegalAccessException ex)
     {
-      this.lastLoop = this.currentLoop;
-      this.currentLoop = this.getTime();
-    
-      return this.currentLoop - this.lastLoop;
-    }
-    public long getFPS()
-    {
-      return Math.round(1000.0 / (this.currentLoop - this.lastLoop));
+      throw new GameException("Could not create window",ex);
     }
   }
   
   // Variables
-  private final EventManager eventManager;
-  private final Timer timer;
-  private final Map<String,Object> services;
-
+  private final Audio audio;       
+  
   // Constructor
-  public Game(int width, int height, String title) throws GameException
+  private Game() throws GameException
   {
-    super(width,height,title);
-    
-    this.eventManager = new EventManager();
-    this.timer = new Timer();
-    this.services = new LinkedHashMap<>();
-    
-    Game.instance = this;
-  }
-  public Game(int width, int height) throws GameException
-  {
-    this(width,height,"Game");
+    this.audio = new Audio();
   }
   
-  // Returns the FPS
-  public long getFPS()
+  // Returns the audio context
+  public Audio getAudio()
   {
-    return this.timer.getFPS();
+    return this.audio;
   }
   
-  // Service management
-  public Object getService(String name)
+  // Adds a window
+  @Override public Game addWindow(Window w)
   {
-    return this.services.get(name);
-  }
-  public <T> T getService(String name, Class<T> type)
-  {
-    return (T)this.services.get(name);
-  }
-  public <T> void addService(String name, T service)
-  {
-    this.services.put(name,service);
-  }
-  public void removeService(String name)
-  {
-    this.services.remove(name);
+    return (Game)super.addWindow(w);
   }
   
-  // Run the game
-  public final void run() throws GameException
+  // Removes a window
+  @Override public Game removeWindow(Window w)
   {
-    // Main loop
-    while (!this.isClosing())
-    {
-      // Update game logic
-      long elapsedTime = this.timer.getDeltaTime();
-      
-      this.update(elapsedTime);
-      this.executeEvents();
-
-      // Draw
-      this.getGraphics().clear();
-      this.draw();
-      this.getGraphics().swap();
-    }
-    
-    // Generate close event
-    this.executeEvent(new CloseEvent());
-    
-    // Destroy
-    this.close();
-  }
-  
-  // Draw and update
-  @Override public void draw() throws GameException
-  {
-    // Implementation left for the user
-  }
-  @Override public void update(long elaspedTime) throws GameException
-  {
-    // Implementation left for the user
+    return (Game)super.removeWindow(w);
   }
 }
