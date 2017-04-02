@@ -6,7 +6,7 @@ import com.dengsn.crucial.Updateable;
 import com.dengsn.crucial.graphics.Color;
 import com.dengsn.crucial.graphics.GL;
 import com.dengsn.crucial.graphics.text.Text;
-import com.dengsn.crucial.graphics.text.Font;
+import com.dengsn.crucial.graphics.text.UnicodeFont;
 import com.dengsn.crucial.util.Rect;
 import com.dengsn.crucial.core.Window;
 import com.dengsn.crucial.util.Vector;
@@ -21,7 +21,7 @@ public class Console implements Drawable, Updateable
   private final LinkedList<Line> lines;
     
   // Graphical variables
-  private Font font = new Font(new java.awt.Font(java.awt.Font.MONOSPACED,java.awt.Font.PLAIN,12));
+  private UnicodeFont font = new UnicodeFont(new java.awt.Font(java.awt.Font.MONOSPACED,java.awt.Font.PLAIN,12));
   private Color color = Color.WHITE;
   private long duration = 10000;
 
@@ -51,11 +51,11 @@ public class Console implements Drawable, Updateable
   }
   
   // Management
-  public Font getFont()
+  public UnicodeFont getFont()
   {
     return this.font;
   }
-  public void setFont(Font font)
+  public void setFont(UnicodeFont font)
   {
     this.font = font;
   }

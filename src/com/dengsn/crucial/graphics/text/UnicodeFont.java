@@ -18,7 +18,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Font
+public class UnicodeFont
 {
   // Variables
   private final Map<Character,Rect> glyphs = new HashMap<>();
@@ -26,31 +26,31 @@ public class Font
   private int lineHeight;
 
   // Constructor
-  public Font(java.awt.Font font, boolean antiAlias)
+  public UnicodeFont(java.awt.Font font, boolean antiAlias)
   {
     this.texture = this.createFontTexture(font,antiAlias);
   }
-  public Font(java.awt.Font font)
+  public UnicodeFont(java.awt.Font font)
   {
     this(font,true);
   }
   
   // Construct from input stream
-  public Font(InputStream in, int size, boolean antiAlias) throws FontFormatException, IOException
+  public UnicodeFont(InputStream in, int size, boolean antiAlias) throws FontFormatException, IOException
   {
     this(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT,in).deriveFont(java.awt.Font.PLAIN,size),antiAlias);
   }
-  public Font(InputStream in, int size) throws FontFormatException, IOException
+  public UnicodeFont(InputStream in, int size) throws FontFormatException, IOException
   {
     this(in,size,true);
   }
   
   // Construct from file
-  public Font(File file, int size, boolean antiAlias) throws FontFormatException, IOException
+  public UnicodeFont(File file, int size, boolean antiAlias) throws FontFormatException, IOException
   {
     this(new FileInputStream(file),size,antiAlias);
   }
-  public Font(File file, int size) throws FontFormatException, IOException
+  public UnicodeFont(File file, int size) throws FontFormatException, IOException
   {
     this(file,size,true);
   }

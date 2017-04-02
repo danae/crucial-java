@@ -9,13 +9,13 @@ import com.dengsn.crucial.util.Vector;
 public class Text implements Drawable, Colorable
 {
   // Variables
-  private final Font font;
+  private final UnicodeFont font;
   private final CharSequence text;
   private Color color = Color.WHITE;
   private TextAlignment alignment = TextAlignment.ALIGN_LEFT;
   
   // Constructor
-  Text(Font font, CharSequence text)
+  Text(UnicodeFont font, CharSequence text)
   {
     this.font = font;
     this.text = text;
@@ -28,7 +28,7 @@ public class Text implements Drawable, Colorable
   }
   
   // Returns the font of this text
-  public Font getFont()
+  public UnicodeFont getFont()
   {
     return this.font;
   }

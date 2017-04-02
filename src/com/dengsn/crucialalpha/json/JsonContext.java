@@ -2,10 +2,10 @@ package com.dengsn.crucialalpha.json;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonValue;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class JsonContext
 {
@@ -13,20 +13,36 @@ public class JsonContext
   private final Map<Class,JsonSerializer> serializers = new HashMap<>();
   private final Map<Class,JsonDeserializer> deserializers = new HashMap<>();
   
-  // Register
-  public <T> JsonContext serializeWith(Class<T> type, JsonSerializer<T> serializer)
+  // Adds a serializer
+  public <T> JsonContext registerSerializer(Class<T> type, JsonSerializer<T> serializer)
   {
     this.serializers.put(type,serializer);
     return this;
   }
-  public <T> JsonContext deserializeWith(Class<T> type, JsonDeserializer<T> deserializer)
+  
+  // Removes a serializer
+  public <T> JsonContext unregisterSerializer(Class<T> type)
+  {
+    this.serializers.remove(type);
+    return this;
+  }
+  
+  // Adds a deserializer
+  public <T> JsonContext registerDeserializer(Class<T> type, JsonDeserializer<T> deserializer)
   {
     this.deserializers.put(type,deserializer);
     return this;
   }
+  
+  // Removes a deserializer
+  public <T> JsonContext unregisterDeserializer(Class<T> type)
+  {
+    this.deserializers.remove(type);
+    return this;
+  }
 
   // Serialize
-  public <T> JsonValue serialize(T object)
+  public <T> JsonValue serialize(T object) throws JsonException
   {
     for (Map.Entry<Class,JsonSerializer> e : this.serializers.entrySet())
     {
@@ -40,20 +56,13 @@ public class JsonContext
     }
 
     // No serializer found
-    return new FieldSerializer().serialize(object,this);
+    throw new JsonException("No serializer present for " + object.getClass().getName());
   }
   
-  // Serialize to String
-  public <T> String serializeToString(T object)
+  // Serialize to string
+  public <T> String serializeToString(T object) throws JsonException
   {
     return this.serialize(object).toString();
-  }
-  
-  // Serialize to ByteBuffer
-  public <T> ByteBuffer serializeToByteBuffer(T object) throws JsonException
-  {
-    String string = this.serializeToString(object);
-    return ByteBuffer.wrap(string.getBytes(StandardCharsets.UTF_8));
   }
   
   // Deserialize
@@ -71,20 +80,18 @@ public class JsonContext
     }
     
     // No deserializer found
-    return null;
+    throw new JsonException("No deserializer present for " + type.getName());
   }
   
-  // Deserialize from String
+  // Deserialize from string
   public <T> T deserializeFromString(String string, Class<T> type) throws JsonException
   {
     return this.deserialize(Json.parse(string),type);
   }
   
-  // Deserialize from ByteBuffer
-  public <T> T deserializeFromByteBuffer(ByteBuffer buffer, Class<T> type) throws JsonException
+  // Deserialize from input stream
+  public <T> T deserializeFromStream(InputStream in, Class<T> type) throws JsonException
   {
-    byte[] bytes = new byte[buffer.remaining()];
-    buffer.get(bytes);
-    return this.deserializeFromString(new String(bytes,StandardCharsets.UTF_8),type);
+    return this.deserializeFromString(new Scanner(in).useDelimiter("\\A").next(),type);
   }
 }

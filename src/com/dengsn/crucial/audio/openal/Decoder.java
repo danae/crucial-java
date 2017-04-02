@@ -1,11 +1,9 @@
-package com.dengsn.crucial.audio.decoder;
+package com.dengsn.crucial.audio.openal;
 
+import com.dengsn.crucial.audio.openal.ALBuffer;
 import com.dengsn.crucial.audio.AudioException;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -15,23 +13,19 @@ import org.lwjgl.BufferUtils;
 
 public interface Decoder
 {
-  // Decode a ByteBuffer to PCM
-  public DecodedBuffer decode(ByteBuffer buffer) throws AudioException;
+  // Decodes a buffer to PCM
+  public ALBuffer decode(ByteBuffer buffer) throws AudioException;
 
-  // Decode an InputStream to PCM
-  public default DecodedBuffer decode(InputStream in) throws AudioException
+  // Decodes an input stream to PCM
+  public default ALBuffer decode(InputStream in) throws AudioException
   {
-    // Create a ByteBuffer of the InputStream
     try
     {
-      ByteBuffer buffer = BufferUtils.createByteBuffer(64);
-
-      // Read the stream into the buffer
+      ByteBuffer buffer = BufferUtils.createByteBuffer(8192);
       try (ReadableByteChannel ch = Channels.newChannel(in))
       {
         while (ch.read(buffer) > -1)
         {
-          // If buffer is full, then resize
           if (buffer.remaining() == 0)
             buffer = Decoder.resizeBuffer(buffer,buffer.capacity() * 2);
         }
@@ -43,8 +37,14 @@ public interface Decoder
     }
     catch (IOException ex)
     {
-      throw new AudioException("Decoding failed: " + ex.getMessage(), ex);
+      throw new AudioException("Decoding with " + this.getClass().getSimpleName() + " failed: " + ex.getMessage(), ex);
     }
+  }
+
+  // Decodes a file name to PCM
+  public default ALBuffer decode(String fileName) throws AudioException, FileNotFoundException
+  {
+    return this.decode(new FileInputStream(fileName));
   }
   
   // Resize a buffer
@@ -54,11 +54,5 @@ public interface Decoder
     buffer.flip();
     newBuffer.put(buffer);
     return newBuffer;
-  }
-
-  // Decode a file name String to PCM
-  public default DecodedBuffer decode(String fileName) throws AudioException, FileNotFoundException
-  {
-    return this.decode(new FileInputStream(fileName));
   }
 }

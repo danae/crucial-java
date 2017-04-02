@@ -1,113 +1,126 @@
 package com.dengsn.crucial.audio.openal;
 
 import com.dengsn.crucial.audio.AudioException;
+import com.dengsn.crucial.audio.Source;
 import org.lwjgl.openal.AL10;
+import org.lwjgl.openal.AL11;
 
-public final class ALSource implements AutoCloseable
+public final class ALSource implements Source, AutoCloseable
 {
-  // State enum
-  public static enum State {PLAYING, STOPPED, PAUSED, LOOPING};
-  
   // Variables
-  private final int sourceId;
+  final int sourceId;
   
   // Constructor
-  protected ALSource() throws AudioException
+  ALSource(ALBuffer buffer) throws AudioException
   {
     this.sourceId = AL10.alGenSources();
-    ALException.check();
+    ALException.alCheckError();
+    
+    this.alSourcei(AL10.AL_BUFFER,buffer.bufferId);
   }
   
   // Closing the resource
   @Override public void close() throws AudioException
   {
     AL10.alDeleteSources(this.sourceId);
-    ALException.check();
+    AudioException.checkALError();
   }
   
-  // Returns this source id
-  public int getSourceId()
+  // Gets a source parameter
+  public int alGetSourcei(int parameter)
   {
-    return this.sourceId;
+    int buffer = AL10.alGetSourcei(this.sourceId,parameter);
+    
+    ALException.alCheckError();
+    
+    return buffer;
+  }
+  public float alGetSourcef(int parameter)
+  {
+    float buffer = AL10.alGetSourcef(this.sourceId,parameter);
+    
+    ALException.alCheckError();
+    
+    return buffer;
+  }
+  public boolean alGetSourceb(int parameter)
+  {
+    return this.alGetSourcei(parameter) == AL10.AL_TRUE;
   }
   
-  // Parameter getter and setters
-  public int getParameter(int parameter) throws AudioException
-  {
-    int result = AL10.alGetSourcei(this.sourceId,parameter);
-    ALException.check();
-    return result;
-  }
-  public void setParameter(int parameter, int value) throws AudioException
+  // Sets a source parameter
+  public void alSourcei(int parameter, int value)
   {
     AL10.alSourcei(this.sourceId,parameter,value);
-    ALException.check();
+    ALException.alCheckError();
   }
-  public void setParameter(int parameter, boolean value) throws AudioException
-  {
-    this.setParameter(parameter,value ? AL10.AL_TRUE : AL10.AL_FALSE);
-  }
-  public void setParameter(int parameter, float value) throws AudioException
+  public void alSourcef(int parameter, float value)
   {
     AL10.alSourcef(this.sourceId,parameter,value);
-    ALException.check();
+    ALException.alCheckError();
   }
-  public void setParameter(int parameter, float value1, float value2, float value3) throws AudioException
+  public void alSourceb(int parameter, boolean value)
   {
-    AL10.alSource3f(this.sourceId,parameter,value1,value2,value3);
-    ALException.check();
+    this.alSourcei(parameter,value ? AL10.AL_TRUE : AL10.AL_FALSE);
   }
 
   // Play this source
-  public void play() throws AudioException
+  @Override public void play(boolean loop)
   {
+    this.alSourceb(AL10.AL_LOOPING,loop);
+    
     AL10.alSourcePlay(this.sourceId);
-    ALException.check();
+    ALException.alCheckError();
+  }
+  
+  // Returns if this source is playing
+  @Override public boolean isPlaying()
+  {
+    return this.alGetSourcei(AL10.AL_SOURCE_STATE) == AL10.AL_PLAYING;
   }
 
   // Pause this source
-  public void pause() throws AudioException
+  @Override public void pause()
   {
     AL10.alSourcePause(this.sourceId);
-    ALException.check();
+    ALException.alCheckError();
   }
 
+  // Returns if this source is paused
+  @Override public boolean isPaused()
+  {
+    return this.alGetSourcei(AL10.AL_SOURCE_STATE) == AL10.AL_PAUSED;
+  }
+  
   // Stop this source
-  public void stop() throws AudioException
+  @Override public void stop()
   {
     AL10.alSourceStop(this.sourceId);
-    ALException.check();
+    ALException.alCheckError();
+  }
+  
+  // Returns if this source is stopped
+  @Override public boolean isStopped()
+  {
+    return this.alGetSourcei(AL10.AL_SOURCE_STATE) == AL10.AL_STOPPED;
   }
 
   // Rewind this source
-  public void rewind() throws AudioException
+  @Override public void rewind()
   {
     AL10.alSourceRewind(this.sourceId);
-    ALException.check();
+    ALException.alCheckError();
   }
   
-  // Get the state
-  public State getState() throws AudioException
+  // Get the current position in seconds
+  @Override public float getPosition()
   {
-    switch (this.getParameter(AL10.AL_SOURCE_STATE))
-    {
-      case AL10.AL_PLAYING:
-        if (this.getParameter(AL10.AL_LOOPING) == AL10.AL_TRUE)
-          return State.LOOPING;
-        else
-          return State.PLAYING;
-      case AL10.AL_PAUSED:
-        return State.PAUSED;
-      default:
-        return State.STOPPED;
-    }
+    return this.alGetSourcef(AL11.AL_SEC_OFFSET);
   }
   
-  // Create a ALSource from an ALBuffer
-  public static ALSource from(ALBuffer buffer) throws AudioException
+  // Set the position in seconds
+  @Override public void setPosition(float position)
   {
-    ALSource source = new ALSource();
-    source.setParameter(AL10.AL_BUFFER,buffer.getBufferId());
-    return source;
+    this.alSourcef(AL11.AL_SEC_OFFSET,position);
   }
 }

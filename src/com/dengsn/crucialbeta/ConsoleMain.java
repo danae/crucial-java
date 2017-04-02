@@ -3,14 +3,14 @@ package com.dengsn.crucialbeta;
 import com.dengsn.crucial.Game;
 import com.dengsn.crucial.GameException;
 import com.dengsn.crucial.graphics.Color;
-import com.dengsn.crucial.graphics.text.Font;
+import com.dengsn.crucial.graphics.text.UnicodeFont;
 import com.dengsn.crucial.core.Window;
 import java.util.Random;
 
 public class ConsoleMain extends ConsoleWindow
 {
   // Variables
-  private final Font font;
+  private final UnicodeFont font;
   
   // Constructor
   public ConsoleMain() throws GameException
@@ -18,7 +18,7 @@ public class ConsoleMain extends ConsoleWindow
     super(1024,768);
     super.setTitle("Console");
     
-    this.font = new Font(java.awt.Font.decode("Source Code Pro").deriveFont(14));
+    this.font = new UnicodeFont(java.awt.Font.decode("Source Code Pro").deriveFont(14));
     
     this.setBackground(Color.WHITE);
 

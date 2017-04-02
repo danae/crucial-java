@@ -3,6 +3,8 @@ package com.dengsn.crucial;
 import com.dengsn.crucial.audio.Audio;
 import com.dengsn.crucial.core.Window;
 import com.dengsn.crucial.core.WindowController;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public final class Game extends WindowController
 {
@@ -36,18 +38,42 @@ public final class Game extends WindowController
   }
   
   // Variables
-  private final Audio audio;       
+  private final Audio audio;
+  private final Map<String,Object> resources;
   
   // Constructor
   private Game() throws GameException
   {
     this.audio = new Audio();
+    this.resources = new LinkedHashMap<>();
   }
   
   // Returns the audio context
   public Audio getAudio()
   {
     return this.audio;
+  }
+  
+  // Returns a resource
+  public <T> T getResource(String name, Class<T> type)
+  {
+    return (T)this.resources.get(name);
+  }
+  
+  // Adds a resource
+  public <T> Game addResource(String name, T resource)
+  {
+    this.resources.put(name,resource);
+    return this;
+  }
+  
+  // Removes a reource
+  public Game removeResource(String name) throws Exception
+  {
+    Object resource = this.resources.remove(name);
+    if (resource instanceof AutoCloseable)
+      ((AutoCloseable)resource).close();
+    return this;
   }
   
   // Adds a window

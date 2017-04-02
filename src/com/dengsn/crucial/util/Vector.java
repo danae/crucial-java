@@ -28,7 +28,7 @@ public class Vector
   }
   
   // Returns the length of this vector
-  public double getLength()
+  public double getMagnitude()
   {
     return Math.sqrt(Math.pow(this.x,2) + Math.pow(this.y,2));
   }
@@ -55,30 +55,21 @@ public class Vector
     return new Vector(this.x + x, this.y + y);
   }
   
-  // Subtracts a vector from this vector
-  public Vector subtract(Vector v)
-  {
-    return new Vector(this.x - v.x,this.y - v.y);
-  }
-  public Vector subtract(double x, double y)
-  {
-    return new Vector(this.x - x, this.y - y);
-  }
-  
-  // Multiplies this vector with a scalar value
-  public Vector multiply(double scalar)
+  // Scales this vector with a scalar value
+  public Vector scale(double scalar)
   {
     return new Vector(this.x * scalar, this.y * scalar);
   }
   
-  // Divides this vector with a scalar value
-  public Vector divide(double scalar)
+  // Rotates this vector with an angle
+  public Vector rotate(double angle)
   {
-    return new Vector(this.x / scalar, this.y / scalar);
+    double direction = this.getDirection() + angle;
+    return new Vector(this.getMagnitude() * Math.cos(direction),this.getMagnitude() * Math.sin(direction));
   }
   
   // Calculates the dot product of this vector and another one
-  public double product(Vector v)
+  public double dot(Vector v)
   {
     return this.x * v.x + this.y * v.y;
   }
@@ -110,10 +101,16 @@ public class Vector
     return new Vector(0.0,0.0);
   }
   
+  // Returns a unit vector
+  public static Vector unit()
+  {
+    return new Vector(1.0,0.0);
+  }
+  
   // Returns the disctance between two vectors
   public static double distance(Vector a, Vector b)
   {
-    return b.getLength() - a.getLength();
+    return b.getMagnitude() - a.getMagnitude();
   }
   
   // Returns the angle between to vectors

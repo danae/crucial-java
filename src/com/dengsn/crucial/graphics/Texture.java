@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-public final class Texture implements AutoCloseable, Drawable
+public final class Texture implements Drawable, AutoCloseable
 {
   // Variables
   private final int id;

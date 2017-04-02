@@ -8,15 +8,13 @@ public class Camera
 {
   // Variables
   private Vector target;
-  private double rotation;
-  private double scale;
+  private Vector orientation;
   
   // Constructor
   public Camera(Vector target)
   {
     this.target = target;
-    this.rotation = 0.0;
-    this.scale = 1.0;
+    this.orientation = Vector.unit();
   }
   
   // Sets the target of this camera
@@ -26,26 +24,39 @@ public class Camera
     return this;
   }
   
-  // Sets the rotation of this camera
-  public Camera setRotation(double rotation)
+  // Sets the orientation of this camera
+  public Camera setOrientation(Vector orientation)
   {
-    this.rotation = rotation;
+    this.orientation = orientation;
+    return this;
+  }
+  
+  // Sets the rotation of this camera
+  public Camera rotate(double angle)
+  {
+    this.orientation = this.orientation.rotate(angle);
     return this;
   }
   
   // Sets the scale of this camera
-  public Camera setScale(double scale)
+  public Camera scale(double scalar)
   {
-    this.scale = scale;
+    this.orientation = this.orientation.scale(scalar);
     return this;
+  }
+  
+  // Transform a vector
+  public Vector map(Vector v)
+  {
+    return null;
   }
   
   // Draw
   public void draw(Drawable d) throws GameException
   {
     GL11.glPushMatrix(); 
-      GL11.glRotated(this.rotation,0.0,0.0,1.0);
-      GL11.glScaled(this.scale,this.scale,1.0);
+      GL11.glRotated(this.orientation.getDirection() * 180.0/Math.PI,0.0,0.0,1.0);
+      GL11.glScaled(this.orientation.getMagnitude(),this.orientation.getMagnitude(),1.0);
       GL11.glTranslated(this.target.x,this.target.y,0.0);
     
       d.draw();
@@ -55,6 +66,6 @@ public class Camera
   // Convert to string
   @Override public String toString()
   {
-    return "translation: " + this.target + "; scale: " + this.scale;
+    return "target: " + this.target + "; orientation: " + this.orientation;
   }
 }
