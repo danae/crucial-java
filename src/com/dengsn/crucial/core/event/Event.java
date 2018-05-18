@@ -3,7 +3,7 @@ package com.dengsn.crucial.core.event;
 public abstract class Event 
 {
   // Variables
-  private boolean cancelled;
+  private transient boolean cancelled;
   
   // Constructor
   public Event()

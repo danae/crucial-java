@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-public final class Texture implements Drawable, AutoCloseable
+public final class Texture implements AutoCloseable, Drawable
 {
   // Variables
   private final int id;
@@ -98,10 +98,10 @@ public final class Texture implements Drawable, AutoCloseable
     double x2 = region.getWidth();
     double y2 = region.getHeight();
 
-    double s1 = region.x1 / this.getWidth();
-    double t1 = region.y1 / this.getHeight();
-    double s2 = region.x2 / this.getWidth();
-    double t2 = region.y2 / this.getHeight();
+    double s1 = region.topLeft.x / this.getWidth();
+    double t1 = region.topLeft.y / this.getHeight();
+    double s2 = (region.bottomRight.x) / this.getWidth();
+    double t2 = (region.bottomRight.y) / this.getHeight();
 
     return () ->
     {

@@ -1,11 +1,11 @@
 package com.dengsn.crucial.core.mouse;
 
-import com.dengsn.crucial.util.Vector;
+import com.dengsn.crucial.util.Point;
 
 public class MousePressEvent extends MouseButtonEvent
 {
   // Constructor
-  public MousePressEvent(Vector position, MouseButton button)
+  public MousePressEvent(Point position, MouseButton button)
   {
     super(position,button);
   }

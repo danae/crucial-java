@@ -2,43 +2,43 @@ package com.dengsn.crucial.graphics.shape;
 
 import com.dengsn.crucial.GameException;
 import com.dengsn.crucial.graphics.Color;
-import com.dengsn.crucial.util.Vector;
+import com.dengsn.crucial.util.Point;
 import com.dengsn.crucial.graphics.GL;
 
 public class Line extends Shape
 {
   // Variables
-  private Vector start = Vector.origin();
-  private Vector end = Vector.origin();
+  private Point start = Point.origin();
+  private Point end = Point.origin();
   
   // Constructor
   public Line()
   {
-    this.start = Vector.origin();
-    this.end = Vector.origin();
+    this.start = Point.origin();
+    this.end = Point.origin();
   }
   
   // Returns the starting point
-  public Vector getStart()
+  public Point getStart()
   {
     return this.start;
   }
   
   // Sets the starting point
-  public Line setStart(Vector start)
+  public Line setStart(Point start)
   {
     this.start = start;
     return this;
   }
   
   // Returns the ending point
-  public Vector getEnd()
+  public Point getEnd()
   {
     return this.end;
   }
   
   // Sets the ending point
-  public Line setEnd(Vector end)
+  public Line setEnd(Point end)
   {
     this.end = end;
     return this;

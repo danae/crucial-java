@@ -29,7 +29,7 @@ public class RegisteredListener<E extends Event> implements Listener<E>
     return this.priority;
   }
 
-  // Handle an incoming event
+  // Listen for an event
   @Override public void handle(E event) throws EventException
   {
     this.listener.handle(event);

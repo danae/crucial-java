@@ -31,7 +31,7 @@ public class Audio implements AutoCloseable
     // Create an AL device
     String defaultDeviceName = ALC10.alcGetString(0,ALC10.ALC_DEFAULT_DEVICE_SPECIFIER);
     if (defaultDeviceName == null)
-      throw new AudioException("No default sound device specified (do you have any sound cards available?)");
+      throw new AudioException("Audio initialization failed: no default sound device specified (do you have any sound cards available?)");
     this.device = ALC10.alcOpenDevice(defaultDeviceName);
     
     // Create an AL context
@@ -43,6 +43,6 @@ public class Audio implements AutoCloseable
     ALCCapabilities alcCapabilities = ALC.createCapabilities(this.device);
     ALCapabilities alCapabilities = AL.createCapabilities(alcCapabilities);
     if (!alCapabilities.OpenAL10)
-      throw new AudioException("No OpenAL10 capabilities (do you have any sound cards available?)");
+      throw new AudioException("Audio initialization failed: no OpenAL10 capabilities (do you have any sound cards available?)");
   }
 }

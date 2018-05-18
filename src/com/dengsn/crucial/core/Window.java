@@ -7,9 +7,9 @@ import com.dengsn.crucial.Updateable;
 import com.dengsn.crucial.core.event.EventException;
 import com.dengsn.crucial.core.event.EventController;
 import com.dengsn.crucial.graphics.Color;
+import com.dengsn.crucial.util.Point;
+import com.dengsn.crucial.util.Viewport;
 import com.dengsn.crucial.core.keyboard.Keyboard;
-import com.dengsn.crucial.util.Camera;
-import com.dengsn.crucial.util.Vector;
 import java.nio.IntBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
@@ -264,9 +264,9 @@ public abstract class Window extends EventController implements Drawable, Update
   }
   
   // Get viewport for this graphics area
-  public Camera toCamera()
+  public Viewport toViewport()
   {
-    return new Camera(new Vector(this.getWidth() * 0.5,this.getHeight() * 0.5).invert());
+    return new Viewport().setTranslation(new Point(this.getWidth() * 0.5,this.getHeight() * 0.5).invert());
   }
   
   // Draw and update methods

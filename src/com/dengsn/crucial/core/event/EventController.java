@@ -1,7 +1,6 @@
 package com.dengsn.crucial.core.event;
 
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +17,7 @@ public class EventController extends EventQueue
   }
   public <E extends Event> void registerListener(Listener<E> listener, Class<E> eventClass)
   {
-    this.listeners.add(new RegisteredListener(listener,eventClass,ListenerPriority.NORMAL));
+    this.registerListener(listener,eventClass,ListenerPriority.NORMAL);
   }
   
   // Unregisters a listener
@@ -33,15 +32,13 @@ public class EventController extends EventQueue
   // Execute events
   protected void executeEvent(Event event) throws EventException
   {
-    // Get all events that can handle this event
-    Iterator<RegisteredListener> it = this.listeners.stream()
+    // Execute events in order
+    List<RegisteredListener> eventListeners = this.listeners.stream()
       .filter(l -> l.getEventClass().isAssignableFrom(event.getClass()))
       .sorted(Comparator.comparing(RegisteredListener::getPriority))
-      .iterator();
-    
-    // Execute events in order
-    while (it.hasNext())
-      it.next().handle(event);
+      .collect(Collectors.toList());
+    for (RegisteredListener l : eventListeners)
+      l.handle(event);
     
     // Unregister event
     this.unregisterEvent(event);

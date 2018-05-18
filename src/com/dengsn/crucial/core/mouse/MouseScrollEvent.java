@@ -1,6 +1,6 @@
 package com.dengsn.crucial.core.mouse;
 
-import com.dengsn.crucial.util.Vector;
+import com.dengsn.crucial.util.Point;
 
 public class MouseScrollEvent extends MouseMoveEvent
 {
@@ -8,7 +8,7 @@ public class MouseScrollEvent extends MouseMoveEvent
   private final double offset;
   
   // Constructor
-  public MouseScrollEvent(Vector position, double offset)
+  public MouseScrollEvent(Point position, double offset)
   {
     super(position);
     this.offset = offset;

@@ -32,7 +32,8 @@ public class WindowController implements Drawable, Updateable, AutoCloseable
   @Override public void close() throws WindowException
   {
     // Close all windows in the list
-    this.windows.forEach(Window::close);
+    for (Window w : this.windows)
+      w.close();
     
     // Terminate GLFW
     GLFW.glfwTerminate();

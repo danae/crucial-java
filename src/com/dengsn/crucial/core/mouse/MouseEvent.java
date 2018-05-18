@@ -1,21 +1,21 @@
 package com.dengsn.crucial.core.mouse;
 
 import com.dengsn.crucial.core.event.Event;
-import com.dengsn.crucial.util.Vector;
+import com.dengsn.crucial.util.Point;
 
 public abstract class MouseEvent extends Event
 {
   // Variables
-  private final Vector position;
+  private final Point position;
   
   // Constructor
-  public MouseEvent(Vector position)
+  public MouseEvent(Point position)
   {
-    this.position = position;
+    this.position = new Point(position);
   }
   
   // Management
-  public final Vector getPosition()
+  public final Point getPosition()
   {
     return this.position;  
   }

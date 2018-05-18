@@ -2,7 +2,7 @@ package com.dengsn.crucial.graphics.shape;
 
 import com.dengsn.crucial.GameException;
 import com.dengsn.crucial.graphics.Color;
-import com.dengsn.crucial.util.Vector;
+import com.dengsn.crucial.util.Point;
 import com.dengsn.crucial.graphics.GL;
 import com.dengsn.crucial.util.Rect;
 

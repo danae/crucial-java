@@ -2,7 +2,7 @@ package com.dengsn.crucial.graphics.shape;
 
 import com.dengsn.crucial.GameException;
 import com.dengsn.crucial.graphics.Color;
-import com.dengsn.crucial.util.Vector;
+import com.dengsn.crucial.util.Point;
 import com.dengsn.crucial.graphics.GL;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,10 +10,10 @@ import java.util.List;
 public class Polyline extends Shape
 {
   // Variables
-  private final List<Vector> points = new LinkedList<>();
+  private final List<Point> points = new LinkedList<>();
   
   // Adds a point
-  public Polyline addVector(Vector point)
+  public Polyline addPoint(Point point)
   {
     this.points.add(point);
     return this;

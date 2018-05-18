@@ -1,9 +1,8 @@
 package com.dengsn.crucial.audio.openal;
 
-import com.dengsn.crucial.audio.AudioException;
+import com.dengsn.crucial.audio.decoder.DecodedBuffer;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import org.lwjgl.openal.AL10;
@@ -11,13 +10,13 @@ import org.lwjgl.openal.AL10;
 public final class ALBuffer implements AutoCloseable
 {
   // Variables
-  final int bufferId;
+  private final int bufferId;
   
   // Constructor
-  ALBuffer(Buffer buffer, ALFormat format, int sampleRate) throws AudioException
+  protected ALBuffer(Buffer buffer, ALFormat format, int sampleRate) throws ALException
   {
     this.bufferId = AL10.alGenBuffers();
-    AudioException.checkALError();
+    ALException.check();
     
     // Set the buffer
     if (buffer instanceof ByteBuffer)
@@ -26,21 +25,25 @@ public final class ALBuffer implements AutoCloseable
       AL10.alBufferData(this.bufferId,format.getALFormat(),(ShortBuffer)buffer,sampleRate);
     else if (buffer instanceof IntBuffer)
       AL10.alBufferData(this.bufferId,format.getALFormat(),(IntBuffer)buffer,sampleRate);
-    else if (buffer instanceof FloatBuffer)
-      AL10.alBufferData(this.bufferId,format.getALFormat(),(FloatBuffer)buffer,sampleRate);
-    AudioException.checkALError();
+    ALException.check();
   }
   
-  // Closes the buffer
-  @Override public void close() throws AudioException
+  // Closing the resource
+  @Override public void close() throws ALException
   {
     AL10.alDeleteBuffers(this.bufferId);
-    AudioException.checkALError();
+    ALException.check();
   }
   
-  // Returns a new source object with this buffer
-  public ALSource newSource() throws AudioException
+  // Returns this buffer id
+  public int getBufferId()
   {
-    return new ALSource(this);
+    return this.bufferId;
+  }
+  
+  // Create an ALBuffer from a DecodedBuffer
+  public static ALBuffer from(DecodedBuffer buffer) throws ALException
+  {
+    return new ALBuffer(buffer.getBuffer(),buffer.getFormat(),buffer.getSampleRate());
   }
 }

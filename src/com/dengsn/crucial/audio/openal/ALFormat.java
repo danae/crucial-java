@@ -1,29 +1,30 @@
 package com.dengsn.crucial.audio.openal;
 
 import java.util.Arrays;
+import javax.sound.sampled.AudioFormat;
 import org.lwjgl.openal.AL10;
 
 public enum ALFormat
 {
   // Values
-  MONO8(AL10.AL_FORMAT_MONO8),
-  MONO16(AL10.AL_FORMAT_MONO16),
-  STEREO8(AL10.AL_FORMAT_STEREO8),
-  STEREO16(AL10.AL_FORMAT_STEREO16);
+  MONO_8_BIT(AL10.AL_FORMAT_MONO8),
+  MONO_16_BIT(AL10.AL_FORMAT_MONO16),
+  STEREO_8_BIT(AL10.AL_FORMAT_STEREO8),
+  STEREO_16_BIT(AL10.AL_FORMAT_STEREO16);
   
   // Variables
-  private final int alFormat;
+  private final int format;
 
   // Constructor
-  private ALFormat(int alFormat)
+  private ALFormat(int format)
   {
-    this.alFormat = alFormat;
+    this.format = format;
   }
   
   // management
   public int getALFormat()
   {
-    return this.alFormat;
+    return this.format;
   }
   
   // AL format to ALFormat
@@ -41,18 +42,24 @@ public enum ALFormat
     if (channels == 1)
     {
       if (sampleSize == 8)
-        return MONO8;
+        return MONO_8_BIT;
       else if (sampleSize == 16)
-        return MONO16;
+        return MONO_16_BIT;
     }
     else if (channels == 2)
     {
       if (sampleSize == 8)
-        return STEREO8;
+        return STEREO_8_BIT;
       else if (sampleSize == 16)
-        return STEREO16;
+        return STEREO_16_BIT;
     }
     
     return null;
+  }
+  
+  // AudioFormat to ALFormat
+  public static ALFormat of(AudioFormat audioFormat)
+  {
+    return ALFormat.of(audioFormat.getChannels(),audioFormat.getSampleSizeInBits());
   }
 }

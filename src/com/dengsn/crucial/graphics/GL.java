@@ -1,6 +1,6 @@
 package com.dengsn.crucial.graphics;
 
-import com.dengsn.crucial.util.Vector;
+import com.dengsn.crucial.util.Point;
 import com.dengsn.crucial.util.Rect;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -27,7 +27,7 @@ public final class GL
   }
   
   // Draw pixel
-  public static void pixel(Vector pixel)
+  public static void pixel(Point pixel)
   {
     glBegin(GL_LINES);
       glVertex2d(pixel.x,pixel.y);
@@ -36,7 +36,7 @@ public final class GL
   }
   
   // Draw line
-  public static void line(Vector begin, Vector end)
+  public static void line(Point begin, Point end)
   {
     glBegin(GL_LINES);
       glVertex2d(begin.x,begin.y);
@@ -45,7 +45,7 @@ public final class GL
   }
   
   // Draw circle
-  public static void circle(Vector position, double radius)
+  public static void circle(Point position, double radius)
   {
     glBegin(GL_TRIANGLE_FAN);
       for (int angle = 0; angle <= 360; angle ++)
@@ -54,18 +54,18 @@ public final class GL
   }
   
   // Draw circle stroke
-  public static void circleStroke(Vector position, double radius)
+  public static void circleStroke(Point position, double radius)
   {
     for (int angle = 0; angle <= 360; angle ++)
     {
-      Vector begin = new Vector(position.x + Math.sin(angle*Math.PI/180.0) * radius,position.y + Math.cos(angle*Math.PI/180.0) * radius);  
-      Vector end = new Vector(position.x + Math.sin((angle+1)*Math.PI/180.0) * radius,position.y + Math.cos((angle+1)*Math.PI/180.0) * radius);  
+      Point begin = new Point(position.x + Math.sin(angle*Math.PI/180.0) * radius,position.y + Math.cos(angle*Math.PI/180.0) * radius);  
+      Point end = new Point(position.x + Math.sin((angle+1)*Math.PI/180.0) * radius,position.y + Math.cos((angle+1)*Math.PI/180.0) * radius);  
       GL.line(begin,end);
     }
   }
   
   // Draw pie
-  public static void pie(Vector center, double radius, double startAngle, double endAngle)
+  public static void pie(Point center, double radius, double startAngle, double endAngle)
   {
     glBegin(GL_TRIANGLE_FAN);
       glVertex2d(center.x,center.y);
@@ -82,19 +82,36 @@ public final class GL
   public static void rectangle(Rect rect)
   {
     glBegin(GL_QUADS);
-      glVertex2d(rect.x1,rect.y1);
-      glVertex2d(rect.x1,rect.y2);
-      glVertex2d(rect.x2,rect.y2);
-      glVertex2d(rect.x2,rect.y1);
+      glVertex2d(rect.topLeft.x,rect.topLeft.y);
+      glVertex2d(rect.topLeft.x,rect.bottomRight.y);
+      glVertex2d(rect.bottomRight.x,rect.bottomRight.y);
+      glVertex2d(rect.bottomRight.x,rect.topLeft.y);
     glEnd();  
   }
   
   // Draw rectangle stroke
   public static void rectangleStroke(Rect rect)
   {
-    GL.line(new Vector(rect.x1,rect.y1),new Vector(rect.x1,rect.y2));
-    GL.line(new Vector(rect.x1,rect.y1),new Vector(rect.x2,rect.y1));
-    GL.line(new Vector(rect.x2,rect.y1),new Vector(rect.x2,rect.y2));
-    GL.line(new Vector(rect.x1,rect.y2),new Vector(rect.x2,rect.y2));
+    GL.line(new Point(rect.topLeft.x,rect.topLeft.y),new Point(rect.topLeft.x,rect.bottomRight.y));
+    GL.line(new Point(rect.topLeft.x,rect.topLeft.y),new Point(rect.bottomRight.x,rect.topLeft.y));
+    GL.line(new Point(rect.bottomRight.x,rect.topLeft.y),new Point(rect.bottomRight.x,rect.bottomRight.y));
+    GL.line(new Point(rect.topLeft.x,rect.bottomRight.y),new Point(rect.bottomRight.x,rect.bottomRight.y));
+  }
+    
+  // Collide circles
+  public static boolean collideCircles(Point c1, double r1, Point c2, double r2)
+  {
+    return (Point.distance(c1,c2) <= r1 + r2);
+  }
+  
+  // Collide rectangles
+  public static boolean collideRectangles(Rect r1, Rect r2)
+  {
+    return (
+      (r2.topLeft.x >= r1.topLeft.x && r2.topLeft.x <= r1.bottomRight.x)
+      || (r2.bottomRight.x >= r1.topLeft.x && r2.bottomRight.x <= r1.bottomRight.x)
+      || (r2.topLeft.y >= r1.topLeft.y && r2.topLeft.y <= r1.bottomRight.y)
+      || (r2.bottomRight.y >= r1.topLeft.y && r2.bottomRight.y <= r1.bottomRight.y)
+    );  
   }
 }

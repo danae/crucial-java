@@ -1,11 +1,11 @@
 package com.dengsn.crucial.core.mouse;
 
-import com.dengsn.crucial.util.Vector;
+import com.dengsn.crucial.util.Point;
 
 public class MouseMoveEvent extends MouseEvent
 {
   // Constructor
-  public MouseMoveEvent(Vector position)
+  public MouseMoveEvent(Point position)
   {
     super(position);
   }

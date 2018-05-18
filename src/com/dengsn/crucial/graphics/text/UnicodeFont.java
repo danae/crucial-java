@@ -4,8 +4,9 @@ import com.dengsn.crucial.GameException;
 import com.dengsn.crucial.graphics.Color;
 import com.dengsn.crucial.graphics.Texture;
 import com.dengsn.crucial.graphics.GL;
-import com.dengsn.crucial.util.Vector;
+import com.dengsn.crucial.util.Point;
 import com.dengsn.crucial.util.Rect;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -26,26 +27,22 @@ public class UnicodeFont
   private int lineHeight;
 
   // Constructor
-  public UnicodeFont(java.awt.Font font, boolean antiAlias)
+  public UnicodeFont(Font font, boolean antiAlias)
   {
-    this.texture = this.createFontTexture(font,antiAlias);
+    this.texture = createFontTexture(font,antiAlias);
   }
-  public UnicodeFont(java.awt.Font font)
+  public UnicodeFont(Font font)
   {
     this(font,true);
   }
-  
-  // Construct from input stream
   public UnicodeFont(InputStream in, int size, boolean antiAlias) throws FontFormatException, IOException
   {
-    this(java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT,in).deriveFont(java.awt.Font.PLAIN,size),antiAlias);
+    this(Font.createFont(Font.TRUETYPE_FONT,in).deriveFont(Font.PLAIN,size),antiAlias);
   }
   public UnicodeFont(InputStream in, int size) throws FontFormatException, IOException
   {
     this(in,size,true);
   }
-  
-  // Construct from file
   public UnicodeFont(File file, int size, boolean antiAlias) throws FontFormatException, IOException
   {
     this(new FileInputStream(file),size,antiAlias);
@@ -56,7 +53,7 @@ public class UnicodeFont
   }
 
   // Creates a texture from a font
-  private Texture createFontTexture(java.awt.Font font, boolean antiAlias)
+  private Texture createFontTexture(Font font, boolean antiAlias)
   {
     // Loop through the characters to get charWidth and charHeight
     int imageWidth = 0;
@@ -111,7 +108,7 @@ public class UnicodeFont
   }
 
   // Creates a char image from specified AWT font and char
-  private BufferedImage createCharImage(java.awt.Font font, char c, boolean antiAlias)
+  private BufferedImage createCharImage(Font font, char c, boolean antiAlias)
   {
     // Creating temporary image to extract character size
     BufferedImage image = new BufferedImage(1,1,BufferedImage.TYPE_INT_ARGB);
@@ -152,9 +149,9 @@ public class UnicodeFont
   }
 
   // Dimensions
-  public Vector getDimensions(CharSequence text)
+  public Point getDimensions(CharSequence text)
   {
-    return new Vector(this.getWidth(text),this.getHeight(text));
+    return new Point(this.getWidth(text),this.getHeight(text));
   }
   public int getLineHeight()
   {
@@ -202,7 +199,7 @@ public class UnicodeFont
         continue;
       
       Rect glyph = this.glyphs.get(c);
-      lineHeight = Math.max(lineHeight,(int)glyph.getHeight());
+      lineHeight = Math.max(lineHeight,glyph.getHeight().intValue());
     }
     
     height += lineHeight;
@@ -216,7 +213,7 @@ public class UnicodeFont
   }
     
   // Draw text at the specified position and color
-  void drawText(CharSequence text, Vector position, Color color) throws GameException
+  void drawText(CharSequence text, Point position, Color color) throws GameException
   {
     int textHeight = getHeight(text);
 
@@ -241,11 +238,11 @@ public class UnicodeFont
       Rect glyph = this.glyphs.get(c);
       this.texture
         .region(glyph)
-        .drawAt(new Vector(x,y));
+        .drawAt(new Point(x,y));
       x += glyph.getWidth();
     }
   }
-  void drawText(CharSequence text, Vector position) throws GameException
+  void drawText(CharSequence text, Point position) throws GameException
   {
     drawText(text,position,Color.WHITE);
   }

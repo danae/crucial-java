@@ -4,10 +4,13 @@ import com.dengsn.crucial.GameException;
 
 public class EventException extends GameException
 {
-  public EventException(String message) { 
+  // Constructor
+  public EventException(String message) 
+  { 
     super(message); 
   }
-  public EventException(String message, Throwable cause) {
+  public EventException(String message, Throwable cause) 
+  {
     super(message,cause); 
   }
 }

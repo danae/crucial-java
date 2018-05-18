@@ -4,7 +4,7 @@ import com.dengsn.crucial.Drawable;
 import com.dengsn.crucial.GameException;
 import com.dengsn.crucial.graphics.Color;
 import com.dengsn.crucial.graphics.Colorable;
-import com.dengsn.crucial.util.Vector;
+import com.dengsn.crucial.util.Point;
 
 public class Text implements Drawable, Colorable
 {
@@ -60,7 +60,7 @@ public class Text implements Drawable, Colorable
   }
   
   // Get dimensions
-  public Vector getDimensions()
+  public Point getDimensions()
   {
     return this.font.getDimensions(this.text);
   }
@@ -81,7 +81,7 @@ public class Text implements Drawable, Colorable
   @Override public void draw() throws GameException
   {
     // Calculate position
-    Vector position = Vector.origin();
+    Point position = Point.origin();
     if (this.alignment == TextAlignment.ALIGN_RIGHT)
       position.x -= this.getWidth();
     else if (this.alignment == TextAlignment.ALIGN_CENTER)

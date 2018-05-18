@@ -2,30 +2,30 @@ package com.dengsn.crucial.graphics.shape;
 
 import com.dengsn.crucial.GameException;
 import com.dengsn.crucial.graphics.Color;
-import com.dengsn.crucial.util.Vector;
+import com.dengsn.crucial.util.Point;
 import com.dengsn.crucial.graphics.GL;
 
 public class Circle extends Shape
 {
   // Variables
-  private Vector position;
+  private Point position;
   private double radius;
   
   // Constructor
   public Circle()
   {
-    this.position = Vector.origin();
+    this.position = Point.origin();
     this.radius = 0.0;
   }
   
   // Returns the position
-  public Vector getPosition()
+  public Point getPosition()
   {
     return this.position;
   }
   
   // Sets the position
-  public Circle setPosition(Vector position)
+  public Circle setPosition(Point position)
   {
     this.position = position;
     return this;
